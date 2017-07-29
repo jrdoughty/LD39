@@ -7,7 +7,7 @@ import sdg.graphics.tiles.Tilemap;
 import sdg.graphics.tiles.Tileset;
 import sdg.components.Component;
 
-class PlayScreen extends Screen implements IGameScreen
+class PlayScreen extends Screen
 {
 	public function new()
 	{
