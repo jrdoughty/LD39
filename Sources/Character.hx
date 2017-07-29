@@ -11,13 +11,14 @@ import sdg.collision.Hitbox;
 class Character extends Object
 {
 	var takingInput:Bool = true;
-	var bMoving:Bool = false;
+	var bAttacking:Bool = false;
 	var p:Polygon;
 	var speed:Float = 1;
 	//var sprite:Sprite;	
 	var motion:Motion;
 	//var animator:Animator;
 	var body:Hitbox;
+	var weapon:Object;
 
 	public function new(x:Float, y:Float, g:Graphic)
 	{
@@ -25,13 +26,19 @@ class Character extends Object
 
 		p = cast g;
 
+	}
+
+	public override function added()
+	{
 		body = new Hitbox(this, null, 'collision');
-		
+		weapon = new Weapon(x+width,y + height/2-4,Polygon.createRectangle(32,8,kha.Color.Green,true,.2));
+		setSizeAuto();
+		screen.add(weapon);
 		motion = new Motion();
 		motion.drag.x = 0.5;
 		motion.drag.y = 0.5;
-		motion.maxVelocity.x = 3;
-		motion.maxVelocity.y = 3;
+		motion.maxVelocity.x = 5;
+		motion.maxVelocity.y = 5;
 
 		addComponent(motion);
 	}
@@ -44,11 +51,13 @@ class Character extends Object
 			takingInput = false;
 		}
 
-		if(bMoving)
-		{
-			move();
-		}
 		motion.update();
+		if(bAttacking)
+		{
+			attack();
+		}
+		weapon.x = x + width;
+		weapon.y = y + (height/2)-4;
 	}
 
 	private function attackStart()
@@ -58,14 +67,16 @@ class Character extends Object
 	}
 	private function attackMain()
 	{
-		bMoving = true;
+		bAttacking = true;
+		weapon.collidable = true;
 		p.color = kha.Color.Yellow;
 		
-		Scheduler.addTimeTask(attackEnd,.5);
+		Scheduler.addTimeTask(attackEnd,.25);
 	}
 	private function attackEnd()
 	{
-		bMoving = false;
+		bAttacking = false;
+		weapon.collidable = false;
 		p.color = kha.Color.Blue;
 		Scheduler.addTimeTask(idle,.5);
 	}
@@ -75,19 +86,9 @@ class Character extends Object
 		p.color = kha.Color.Green;
 	}
 	
-	private function move()
+	private function attack()
 	{
 		motion.acceleration.x = speed;
-		/*
-		if(Math.abs(motion.acceleration.y) > 0 && Math.abs(motion.acceleration.x) > 0)
-		{
-			motion.acceleration.y *= Math.sqrt(2);
-			motion.acceleration.x *= Math.sqrt(2);
-		}
-		*/
-		trace(motion.velocity.x);
-
 		body.moveBy(motion.velocity.x, motion.velocity.y, 'collision');
-
 	}
 }
