@@ -19,6 +19,7 @@ class Character extends Object
 	//var animator:Animator;
 	var body:Hitbox;
 	var weapon:Object;
+	var flipX:Bool = false;
 
 	public function new(x:Float, y:Float, g:Graphic)
 	{
@@ -50,13 +51,20 @@ class Character extends Object
 			attackStart();
 			takingInput = false;
 		}
+		if(Mouse.isPressed(1) && takingInput)
+		{
+			flipX = !flipX;
+		}
 
 		motion.update();
 		if(bAttacking)
 		{
 			attack();
 		}
-		weapon.x = x + width;
+		if(!flipX)
+			weapon.x = right;
+		else
+			weapon.x = x  - weapon.width;
 		weapon.y = y + (height/2)-4;
 	}
 

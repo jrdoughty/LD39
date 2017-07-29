@@ -18,6 +18,7 @@ class Weapon extends Object
 		super(x,y,g);
 
 		p = cast g;
+		setSizeAuto();
 		body = new Hitbox(this, null, 'collision');
 		collidable = false;
 	}

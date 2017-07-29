@@ -14,6 +14,8 @@ class PlayScreen extends Screen
 	public override function init()
 	{
 		super.init();
+		var staminaMeter:Object = new Object(16,16,Polygon.createRectangle(128,16,kha.Color.Green,true,.2));
+		add(staminaMeter);
 		var char = new Character(16,200,Polygon.createRectangle(32,32,kha.Color.Green,true,.2));
 		add(char);
 
