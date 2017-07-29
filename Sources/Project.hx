@@ -7,7 +7,6 @@ import kha.Assets;
 import sdg.Engine;
 import sdg.manager.GamePadMan;
 import sdg.Sdg;
-import screens.PlayScreen;
 import sdg.manager.Manager.*;
 
 class Project {

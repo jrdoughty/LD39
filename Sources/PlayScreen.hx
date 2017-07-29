@@ -1,4 +1,4 @@
-package screens;
+package;
 
 import kha.Assets;
 import sdg.graphics.shapes.Polygon;
@@ -14,7 +14,7 @@ class PlayScreen extends Screen
 	public override function init()
 	{
 		super.init();
-		var char = new Object(16,200,Polygon.createRectangle(16,32,kha.Color.Green,true,.2));
+		var char = new Character(16,200,Polygon.createRectangle(32,32,kha.Color.Green,true,.2));
 		add(char);
 
 		var bull = new Object(200,200,Polygon.createRectangle(64,32,kha.Color.Red,true,.2));
