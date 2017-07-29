@@ -8,6 +8,7 @@ import sdg.Engine;
 import sdg.manager.GamePadMan;
 import sdg.Sdg;
 import sdg.manager.Manager.*;
+import sdg.collision.Hitbox;
 
 class Project {
 	public function new() {
@@ -19,6 +20,8 @@ class Project {
 		var engine = new Engine(320, 240);
 		engine.enable(KEYBOARD | MOUSE | GAMEPAD | DELTA);
 		loadData();
+
+		Hitbox.init();
 		Sdg.addScreen('Play', new PlayScreen(), true);
 
 		System.notifyOnRender(engine.render);
