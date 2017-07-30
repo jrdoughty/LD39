@@ -7,6 +7,7 @@ import sdg.graphics.shapes.Polygon;
 import sdg.manager.Mouse;
 import sdg.components.Motion;
 import sdg.collision.Hitbox;
+import sdg.components.EventDispatcher;
 
 class Character extends Object
 {
@@ -26,7 +27,7 @@ class Character extends Object
 		super(x,y,g);
 
 		p = cast g;
-
+		addComponent(new EventDispatcher());
 	}
 
 	public override function added()
@@ -78,7 +79,7 @@ class Character extends Object
 		bAttacking = true;
 		weapon.collidable = true;
 		p.color = kha.Color.Yellow;
-		
+		eventDispatcher.dispatchEvent('action',new sdg.event.EventObject(true));
 		Scheduler.addTimeTask(attackEnd,.25);
 	}
 	private function attackEnd()
