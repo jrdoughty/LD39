@@ -33,5 +33,7 @@ class Weapon extends Object
 		{
 			p.color = kha.Color.Green;
 		}
+		super.update();
+		body.moveTo(x,y);
 	}
 }

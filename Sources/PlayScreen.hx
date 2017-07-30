@@ -8,6 +8,7 @@ import sdg.Object;
 import sdg.event.IEventDispatcher;
 import sdg.event.EventSystem;
 import sdg.event.EventObject;
+import sdg.math.Vector2b;
 import haxe.Constraints.Function;
 
 class PlayScreen extends Screen implements IEventDispatcher
@@ -21,8 +22,8 @@ class PlayScreen extends Screen implements IEventDispatcher
 
 	var stamina:Float = 1;
 	var staminaMeter:Object;
-	var char:Object;
-	var bull:Object;
+	var char:Character;
+	var bull:Bull;
 
 	public function new()
 	{
@@ -33,25 +34,58 @@ class PlayScreen extends Screen implements IEventDispatcher
 	{
 		super.init();
 		staminaMeter = new Object(16,16,Polygon.createRectangle(128,16,kha.Color.Green,true,.2));
+		staminaMeter.fixed = new Vector2b(true, true);
 		add(staminaMeter);
 		char = new Character(16,200,Polygon.createRectangle(32,32,kha.Color.Green,true,.2));
-		add(char);
 
-		bull = new Object(200,200,Polygon.createRectangle(64,32,kha.Color.Red,true,.2));
+		bull = new Bull(200,200,Polygon.createRectangle(64,32,kha.Color.Purple,true,.2));
 		add(bull);
+		add(char);
 		
 		Scheduler.addTimeTask(function(){stamina -= .003;}, 0, .05);
 		addEvent('action', function(e:EventObject){stamina -= .1;});
+		addEvent('hit', function(e:EventObject){stamina -= .5;});
 	}
 
 	public override function update()
 	{
-		super.update();
-		cast(staminaMeter.graphic, Polygon).points[1].x = stamina * 128 + staminaMeter.x;
-		cast(staminaMeter.graphic, Polygon).points[2].x = stamina * 128 + staminaMeter.x;
+		if(stamina < 0 || !bull.active)
+			trace('end');
+		else
+		{
+			super.update();
+			cast(staminaMeter.graphic, Polygon).points[1].x = stamina * 128 + staminaMeter.x;
+			cast(staminaMeter.graphic, Polygon).points[2].x = stamina * 128 + staminaMeter.x;
+			if(doObjectsOverlap(char,bull) && char.collidable && !char.bRecovering && bull.active)
+			{
+				char.hit();
+			}			
+			if(doObjectsOverlap(char.weapon,bull) && char.weapon.collidable && bull.active && !bull.bRecovering)
+			{
+				bull.hit();
+			}
+		}
 	}
 
 	
+	public static function doObjectsOverlap(object1:Object, object2:Object):Bool
+	{
+		var topLeftX1:Float = object1.width >= 0 ? object1.x : object1.x + object1.width;
+		var topLeftY1:Float = object1.height >= 0 ? object1.y : object1.y + object1.height;
+		var bottomRightX1:Float = object1.width >= 0 ? object1.x + object1.width : object1.x;
+		var bottomRightY1:Float = object1.height >= 0 ? object1.y + object1.height : object1.y;
+		
+		var topLeftX2:Float = object2.width >= 0 ? object2.x : object2.x + object2.width;
+		var topLeftY2:Float = object2.height >= 0 ? object2.y : object2.y + object2.height;
+		var bottomRightX2:Float = object2.width >= 0 ? object2.x + object2.width : object2.x;
+		var bottomRightY2:Float = object2.height >= 0 ? object2.y + object2.height : object2.y;
+
+		if (topLeftX1 > bottomRightX2 || topLeftX2 > bottomRightX1 || topLeftY1 > bottomRightY2 || topLeftY2 > bottomRightY1)
+		{
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Adds Event Listener for the name string and addes the callback to the functions to be 
