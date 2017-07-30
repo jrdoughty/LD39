@@ -50,7 +50,7 @@ class PlayScreen extends Screen implements IEventDispatcher
 	public override function update()
 	{
 		if(stamina < 0 || !bull.active)
-			trace('end');
+			true;
 		else
 		{
 			super.update();

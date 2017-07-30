@@ -82,7 +82,7 @@ class Bull extends Object
 			screen.remove(this, true);
 			active = false;
 			bRecovering = true;
-			Scheduler.addTimeTask(function(){bRecovering = false;}, .3);
+			Scheduler.addTimeTask(function(){bRecovering = false;}, 1);
 		}
 	}
 }
