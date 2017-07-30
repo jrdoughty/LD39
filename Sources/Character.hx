@@ -58,7 +58,7 @@ class Character extends Object
 	public override function update()
 	{
 		frameCount++;
-		screen.camera.x = x - 160;
+		//screen.camera.x = x - 160;
 		if((Mouse.isHeld(0) && Mouse.isHeld(1) || Keyboard.isHeld(' ')) && takingInput)
 		{
 			attackStart();

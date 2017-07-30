@@ -56,7 +56,7 @@ class Bull extends Object
 	{
 		bAttacking = true;
 		p.color = kha.Color.Red;
-		Scheduler.addTimeTask(attackEnd,.8);
+		Scheduler.addTimeTask(attackEnd,.65);
 		collidable = false;
 	}
 	private function attackEnd()
@@ -77,12 +77,12 @@ class Bull extends Object
 	{
 		trace('ouch');
 		health--;
+		bRecovering = true;
+		Scheduler.addTimeTask(function(){bRecovering = false;}, .3);
 		if(health <= 0)
 		{
 			screen.remove(this, true);
 			active = false;
-			bRecovering = true;
-			Scheduler.addTimeTask(function(){bRecovering = false;}, 1);
 		}
 	}
 }
