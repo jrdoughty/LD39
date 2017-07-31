@@ -13,7 +13,7 @@ class Bull extends Object
 	var body:Hitbox;
 	var speed:Float = .5;
 	var motion:Motion;
-	var flipX:Bool = true;
+	var flipX:Bool = false;
 	var bAttacking:Bool = false;
 	var p:Polygon;
 	var health:Int = 3;
@@ -33,7 +33,7 @@ class Bull extends Object
 		motion.acceleration.y = 0.3;
 
 		addComponent(motion);
-		attackStart();
+		idle();
 	}
 	private function attack()
 	{

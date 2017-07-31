@@ -33,7 +33,7 @@ class Character extends Object
 	{
 		super(x,y,g);
 
-		p = cast g;
+		//p = cast g;
 		addComponent(new EventDispatcher());
 		startY = y;
 	}
@@ -70,7 +70,7 @@ class Character extends Object
 			bJumping = true;
 			motion.velocity.y = -15;
 			eventDispatcher.dispatchEvent('action',new EventObject(true));
-			p.color = kha.Color.Blue;
+			//p.color = kha.Color.Blue;
 		}
 		else if((Mouse.isHeld(1) || Keyboard.isHeld('d')) && takingInput)
 		{
@@ -110,14 +110,14 @@ class Character extends Object
 
 	private function attackStart()
 	{
-		p.color = kha.Color.Blue;
+		//p.color = kha.Color.Blue;
 		Scheduler.addTimeTask(attackMain,.5);
 	}
 	private function attackMain()
 	{
 		bAttacking = true;
 		weapon.collidable = true;
-		p.color = kha.Color.Yellow;
+		//p.color = kha.Color.Yellow;
 		eventDispatcher.dispatchEvent('action',new EventObject(true));
 		Scheduler.addTimeTask(attackEnd,.25);
 		collidable = false;
@@ -126,14 +126,14 @@ class Character extends Object
 	{
 		bAttacking = false;
 		weapon.collidable = false;
-		p.color = kha.Color.Blue;
+		//p.color = kha.Color.Blue;
 		Scheduler.addTimeTask(idle,.5);
 		collidable = true;
 	}
 	private function idle()
 	{
 		takingInput = true;
-		p.color = kha.Color.Green;
+		//p.color = kha.Color.Green;
 		motion.acceleration.x = 0;
 	}
 	
@@ -158,11 +158,10 @@ class Character extends Object
 			motion.velocity.y = 0;
 			bJumping = false;
 			takingInput = true;
-			p.color = kha.Color.Green;
+			//p.color = kha.Color.Green;
 		}
 	}
 
-	//public override function 
 
 	public function hit()
 	{
