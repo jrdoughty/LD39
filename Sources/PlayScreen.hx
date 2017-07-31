@@ -3,7 +3,6 @@ package;
 import kha.Assets;
 import kha.Scheduler;
 import sdg.graphics.shapes.Polygon;
-import sdg.atlas.Region;
 import sdg.Screen;
 import sdg.Object;
 import sdg.event.IEventDispatcher;
@@ -12,6 +11,7 @@ import sdg.event.EventObject;
 import sdg.math.Vector2b;
 import haxe.Constraints.Function;
 import sdg.graphics.Sprite;
+import sdg.atlas.Region;
 
 class PlayScreen extends Screen implements IEventDispatcher
 {
@@ -37,9 +37,9 @@ class PlayScreen extends Screen implements IEventDispatcher
 		super.init();
 		staminaMeter = new Object(16,16,Polygon.createRectangle(128,16,kha.Color.Green,true,.2));
 		staminaMeter.fixed = new Vector2b(true, true);
+		add(new Object(0,0, new Sprite(new Region(Assets.images.bg,0,0,320,240))));
 		add(staminaMeter);
-		rl:
-		char = new Character(16,184,new Sprite(kha.Assets.images.bot));
+		char = new Character(16,200,kha.Assets.images.bot);
 
 		bull = new Bull(200,200,Polygon.createRectangle(64,32,kha.Color.Purple,true,.2));
 		add(bull);
@@ -57,13 +57,14 @@ class PlayScreen extends Screen implements IEventDispatcher
 		cast(staminaMeter.graphic, Polygon).points[1].x = stamina * 128;
 		cast(staminaMeter.graphic, Polygon).points[2].x = stamina * 128;
 
-		if(stamina == 0 || !bull.active)
+		if(stamina == 0) //|| !bull.active)
 		{
 			char.active = false;
 		}
 		else
 		{
 			super.update();
+			
 			if(doObjectsOverlap(char,bull) && char.collidable && !char.bRecovering && bull.active)
 			{
 				char.hit();

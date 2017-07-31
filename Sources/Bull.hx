@@ -33,7 +33,7 @@ class Bull extends Object
 		motion.acceleration.y = 0.3;
 
 		addComponent(motion);
-		idle();
+		//idle();
 	}
 	private function attack()
 	{

@@ -10,7 +10,12 @@ import sdg.manager.Keyboard;
 import sdg.collision.Hitbox;
 import sdg.components.Motion;
 import sdg.components.EventDispatcher;
+import sdg.components.Animator;
 import sdg.event.EventObject;
+import kha.Image;
+import sdg.atlas.Region;
+import sdg.atlas.Atlas;
+import sdg.graphics.Sprite;
 
 class Character extends Object
 {
@@ -28,10 +33,14 @@ class Character extends Object
 	var body:Hitbox;
 	var flipX:Bool = false;
 	var frameCount:UInt = 0;
+	var rl:Array<Region>;
+	var anim:Animator;
 
-	public function new(x:Float, y:Float, g:Graphic)
+	public function new(x:Float, y:Float, i:Image)
 	{
-		super(x,y,g);
+		rl = Atlas.createRegionList(i,16,32);
+
+		super(x,y,new Sprite(rl[0]));
 
 		//p = cast g;
 		addComponent(new EventDispatcher());
@@ -41,7 +50,8 @@ class Character extends Object
 	public override function added()
 	{
 		body = new Hitbox(this);
-		weapon = new Weapon(x+width,y + height/2-4,Polygon.createRectangle(32,8,kha.Color.Green,true,.2));
+
+		weapon = new Weapon(x+width,y + height/2-4,kha.Assets.images.weapon);
 		setSizeAuto();
 		screen.add(weapon);
 		motion = new Motion();
@@ -53,18 +63,29 @@ class Character extends Object
 		motion.acceleration.y = 0.3;
 
 		addComponent(motion);
+
+		var a = new Animator();
+		anim = a;
+		a.addAnimation('idle',[rl[0],rl[1],rl[2],rl[3],rl[2],rl[1]],12);
+		a.addAnimation('attackReady',[rl[8],rl[9],rl[10],rl[11],rl[12],rl[13],rl[14],rl[15]],16);
+		a.addAnimation('attack',[rl[0],rl[1],rl[2],rl[3],rl[2],rl[1]],12);
+		a.addAnimation('attackFinish',[rl[0],rl[1],rl[2],rl[3],rl[2],rl[1]],12);
+		addComponent(a);
+		a.play('idle', true);
 	}
 
 	public override function update()
 	{
 		frameCount++;
 		//screen.camera.x = x - 160;
+		cast(graphic, Sprite).flip.x = flipX;
+		cast(weapon.graphic, Sprite).flip.x = flipX;
 		if((Mouse.isHeld(0) && Mouse.isHeld(1) || Keyboard.isHeld(' ')) && takingInput)
 		{
 			attackStart();
 			takingInput = false;
 		}
-		else if((Keyboard.isHeld('ctrl') || Keyboard.isHeld('w') || Mouse.isHeld(2)) && takingInput)
+		else if((Keyboard.isHeld('ctrl') || Keyboard.isHeld('w') || Keyboard.isHeld('up') || Mouse.isHeld(2)) && takingInput)
 		{
 			takingInput = false;
 			bJumping = true;
@@ -72,12 +93,12 @@ class Character extends Object
 			eventDispatcher.dispatchEvent('action',new EventObject(true));
 			//p.color = kha.Color.Blue;
 		}
-		else if((Mouse.isHeld(1) || Keyboard.isHeld('d')) && takingInput)
+		else if((Mouse.isHeld(1) || Keyboard.isHeld('d') || Keyboard.isHeld('right')) && takingInput)
 		{
 			flipX = false;
 			move();
 		}		
-		else if(Mouse.isHeld(0) || Keyboard.isHeld('a') && takingInput)
+		else if((Mouse.isHeld(0) || Keyboard.isHeld('a') || Keyboard.isHeld('left')) && takingInput)
 		{
 			flipX = true;
 			move();
@@ -87,7 +108,10 @@ class Character extends Object
 			motion.acceleration.x = 0;
 		}
 
-		motion.update();
+		for(i in components)
+		{
+			i.update();
+		}
 
 		visible = (!bRecovering || frameCount % 20 > 10);
 		weapon.visible = visible;
@@ -101,10 +125,16 @@ class Character extends Object
 			jump();
 		}
 
+		if(x < 0)
+			x = 0;
+		else if(x > 320 - width)
+			x = 320 - width;
+		
 		if(!flipX)
 			weapon.x = right;
 		else
 			weapon.x = x  - weapon.width;
+
 		weapon.y = y + (height/2)-4;
 	}
 
@@ -112,6 +142,7 @@ class Character extends Object
 	{
 		//p.color = kha.Color.Blue;
 		Scheduler.addTimeTask(attackMain,.5);
+		anim.play('attackReady');
 	}
 	private function attackMain()
 	{
@@ -135,6 +166,7 @@ class Character extends Object
 		takingInput = true;
 		//p.color = kha.Color.Green;
 		motion.acceleration.x = 0;
+		anim.play('idle', true);
 	}
 	
 	private function attack()
