@@ -35,13 +35,12 @@ class PlayScreen extends Screen implements IEventDispatcher
 	public override function init()
 	{
 		super.init();
-		staminaMeter = new Object(16,16,Polygon.createRectangle(128,16,kha.Color.Green,true,.2));
+		staminaMeter = new Object(16,16,Polygon.createRectangle(128,16,kha.Color.Blue,true,.2));
 		staminaMeter.fixed = new Vector2b(true, true);
-		add(new Object(0,0, new Sprite(new Region(Assets.images.bg,0,0,320,240))));
+		add(new Object(0,0, new Sprite(new Region(Assets.images.bg,0,0,320,188))));
 		add(staminaMeter);
-		char = new Character(16,200,kha.Assets.images.bot);
-
-		bull = new Bull(200,200,Polygon.createRectangle(64,32,kha.Color.Purple,true,.2));
+		char = new Character(16,148,Assets.images.bot);
+		bull = new Bull(200,148,Assets.images.enemy);
 		add(bull);
 		add(char);
 		
@@ -52,28 +51,29 @@ class PlayScreen extends Screen implements IEventDispatcher
 
 	public override function update()
 	{
-		if(stamina < 0)
+		if(stamina <= 0)
+		{
 			stamina = 0;
+			bull.active = false;
+			if(!char.dead)
+				char.death();
+			char.dead = true;
+		}
 		cast(staminaMeter.graphic, Polygon).points[1].x = stamina * 128;
 		cast(staminaMeter.graphic, Polygon).points[2].x = stamina * 128;
 
-		if(stamina == 0) //|| !bull.active)
+
+		
+		super.update();
+		if(doObjectsOverlap(char,bull) && char.collidable && !char.bRecovering && bull.active)
 		{
-			char.active = false;
-		}
-		else
+			char.hit();
+		}			
+		if(doObjectsOverlap(char.weapon,bull) && char.weapon.collidable && bull.active && !bull.bRecovering)
 		{
-			super.update();
-			
-			if(doObjectsOverlap(char,bull) && char.collidable && !char.bRecovering && bull.active)
-			{
-				char.hit();
-			}			
-			if(doObjectsOverlap(char.weapon,bull) && char.weapon.collidable && bull.active && !bull.bRecovering)
-			{
-				bull.hit();
-			}
+			bull.hit();
 		}
+		
 	}
 
 	
